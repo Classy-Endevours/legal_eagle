@@ -55,7 +55,9 @@ const ClauseLibrary = () => {
     try {
       setSelectedClause(clause);
       setIsEditMode(true);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const submitEdit = async () => {
@@ -77,6 +79,7 @@ const ClauseLibrary = () => {
       }
       await updateClause(selectedClause?._id, updatedClause);
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
       setIsEditMode(false);
@@ -88,12 +91,14 @@ const ClauseLibrary = () => {
     try {
       await deleteClause(id);
     } catch (error) {
+      console.log(error);
     } finally {
       await fetchClauses();
     }
   };
 
-  async function handleSubmit() {
+  async function handleSubmit(e: any) {
+    e.preventDefault();
     try {
       if (loading) {
         return;
@@ -115,10 +120,9 @@ const ClauseLibrary = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      await fetchClauses();
       setIsCreateMode(false);
-      setIsEditMode(false);
       setLoading(false);
+      await fetchClauses();
     }
   }
 
@@ -129,8 +133,18 @@ const ClauseLibrary = () => {
         //@ts-ignore
         setClauses(data);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-16 h-screen">
+        <PulseLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 max-h-[80vh] overflow-y-scroll p-4">
@@ -176,15 +190,14 @@ const ClauseLibrary = () => {
                         variant="ghost"
                         size="icon"
                         className="text-destructive"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (clause._id) {
+                            removeClause(clause._id);
+                          }
+                        }}
                       >
-                        <Trash2
-                          className="h-4 w-4"
-                          onClick={() => {
-                            if (clause._id) {
-                              removeClause(clause._id);
-                            }
-                          }}
-                        />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -258,6 +271,7 @@ const ClauseLibrary = () => {
               <Button
                 className="w-full bg-[#1e3a8a] hover:bg-[#1e3a8a]/90"
                 onClick={handleSubmit}
+                type="button"
               >
                 {loading ? (
                   <div className="w-full flex justify-center">

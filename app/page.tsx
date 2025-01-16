@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,13 +20,24 @@ enum EUserAction {
 }
 
 export default function Home() {
-  const [isSheetStarted, setIsSheetStarted] = useState(false);
+  const [isSheetStarted, setIsSheetStarted] = useState(() => {
+    // Only run in client-side
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("isSheetStarted");
+      return saved === "true";
+    }
+    return false;
+  });
   const [activeTab, setActiveTab] = useState("review");
   const [selectedResult, setSelectedResult] = useState<any>(null);
   const [isWriteMode, setIsWriteMode] = useState(false);
   const [selectedAction, setSelectedAction] = useState<EUserAction>(
     EUserAction.default
   );
+
+  useEffect(() => {
+    localStorage.setItem("isSheetStarted", isSheetStarted.toString());
+  }, [isSheetStarted]);
 
   const ActionContent = {
     [EUserAction.runAI]: (

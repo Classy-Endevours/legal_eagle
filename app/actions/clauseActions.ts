@@ -17,9 +17,9 @@ export async function createClause(formData: Clause) {
   try {
     const client = await clientPromise;
     const db = client.db("clauselibrary");
-    const result = await db.collection("clauses").insertOne(formData as any);
+    await db.collection("clauses").insertOne(formData as any);
     revalidatePath("/clauses");
-    return { success: true, data: result };
+    return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to create clause" };
   }
@@ -32,7 +32,7 @@ export async function getClauses() {
     const db = client.db("clauselibrary");
 
     const clauses = await db.collection("clauses").find({}).toArray();
-    return { success: true, data: clauses };
+    return { success: true, data: JSON.parse(JSON.stringify(clauses)) };
   } catch (error) {
     return { success: false, error: "Failed to fetch clauses" };
   }
@@ -59,14 +59,14 @@ export async function updateClause(id: string, clause: Clause) {
     const client = await clientPromise;
     const db = client.db("clauselibrary");
 
-    const {_id, ...clauseData} = clause
-    console.log(id)
-    const result = await db
+    const { _id, ...clauseData } = clause;
+
+    await db
       .collection("clauses")
       .updateOne({ _id: new ObjectId(id) }, { $set: clauseData });
 
     revalidatePath("/clauses");
-    return { success: true, data: result };
+    return { success: true };
   } catch (error) {
     console.log(error);
     return { success: false, error: "Failed to update clause" };
@@ -79,11 +79,9 @@ export async function deleteClause(id: string) {
     const client = await clientPromise;
     const db = client.db("clauselibrary");
 
-    const result = await db
-      .collection("clauses")
-      .deleteOne({ _id: new ObjectId(id) });
+    await db.collection("clauses").deleteOne({ _id: new ObjectId(id) });
     revalidatePath("/clauses");
-    return { success: true, data: result };
+    return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to delete clause" };
   }

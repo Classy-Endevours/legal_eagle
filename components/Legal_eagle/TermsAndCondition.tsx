@@ -1,10 +1,8 @@
 import React from "react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 
 const TermsAndCondition = ({ onGetStarted }: { onGetStarted: () => void }) => {
-  const [isSheetStarted, setIsSheetStarted] = useState(true || false);
 
   return (
     <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-white">
