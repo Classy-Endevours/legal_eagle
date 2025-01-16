@@ -9,11 +9,16 @@ import {
 } from "@/components/ui/dialog";
 
 interface IEditDialog {
-  selectedResult: any;
+  selectedResult: {
+    description: string;
+    title: string;
+    type?: string;
+  };
   onOpenChange: () => void;
 }
 
 const EditDialog = ({ selectedResult, onOpenChange }: IEditDialog) => {
+  console.log({ selectedResult });
   return (
     <Dialog
       open={!!selectedResult}
@@ -21,19 +26,20 @@ const EditDialog = ({ selectedResult, onOpenChange }: IEditDialog) => {
       onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[500px]">
-        <DialogTitle>Ai</DialogTitle>
         <DialogHeader>
           <DialogTitle>
-            <div
-              className={`inline-flex items-center gap-2 ${
-                selectedResult?.type === "Missing"
-                  ? "text-red-500"
-                  : "text-yellow-500"
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-current" />
-              {selectedResult?.type}
-            </div>
+            {selectedResult?.type && (
+              <div
+                className={`inline-flex items-center gap-2 ${
+                  selectedResult?.type === "Missing"
+                    ? "text-red-500"
+                    : "text-yellow-500"
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-current" />
+                {selectedResult?.type}
+              </div>
+            )}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
