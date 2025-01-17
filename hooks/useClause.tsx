@@ -30,6 +30,9 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
 
   const handleClause = async () => {
     try {
+      if (clauses.length) {
+        return;
+      }
       setLoading(true);
       const { result } = await analyzeClause(content);
 
