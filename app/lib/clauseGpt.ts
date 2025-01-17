@@ -40,8 +40,8 @@ Example Input:The agreement shall be governed by the laws of [Jurisdiction].
 The party agrees to provide services within 30 days. 
 Payment must be made promptly after service completion. 
 If any party breaches the agreement, remedies shall apply.
-output should be an array of objects in this format
-Example JSON Output:[
+output should be an object with one key result that will be an array of JSON object like this
+[
   {
     "status": "Missing",
     "title": "Jurisdiction Not Specified",

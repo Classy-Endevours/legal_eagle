@@ -5,19 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X, Maximize2, Star } from "lucide-react";
-import { Label } from "@radix-ui/react-context-menu";
 import ClauseLibrary from "@/components/Legal_eagle/ClauseLibrary";
 import TermsAndCondition from "@/components/Legal_eagle/TermsAndCondition";
 import AIResults from "@/components/Legal_eagle/AIResults";
 import EditDialog from "@/components/Legal_eagle/EditDialog";
 import { Bot, FileText, PenLine } from "lucide-react";
 import Summarize from "@/components/Legal_eagle/Summarize";
-import DocxUpload, {
-  mockAIResults,
-} from "@/components/Legal_eagle/DocumentUpload";
+import DocxUpload from "@/components/Legal_eagle/DocumentUpload";
 import ClauseProvider, { useClause } from "@/hooks/useClause";
-import { analyzeClause } from "./actions/clauseAnalysis";
-import { MoonLoader } from "react-spinners";
 enum EUserAction {
   runAI = "runAI",
   summarize = "summarize",

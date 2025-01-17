@@ -26,7 +26,7 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
   const [content, setContent] = useState("");
 
   const handleClause = async () => {
-    const result = await analyzeClause(content);
+    const { result } = await analyzeClause(content);
 
     setClauses(result);
   };

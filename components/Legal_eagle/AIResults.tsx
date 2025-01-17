@@ -11,10 +11,12 @@ interface IAIResults {
 
 const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
   const { clauses, handleClause } = useClause();
-console.log({clauses})
+  console.log({ clauses });
   useEffect(() => {
     handleClause();
   }, []);
+
+  
 
   return (
     <div className="space-y-4 mt-1">
@@ -33,7 +35,7 @@ console.log({clauses})
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-current" />
-            {result.title}
+            {result.status}
           </div>
           <h4 className="font-medium">{result.title}</h4>
           <p className="text-sm text-gray-600">{result.description}</p>
