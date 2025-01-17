@@ -3,43 +3,51 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ISelectedResult } from "@/app/page";
 
 interface IEditDialog {
-  selectedResult: {
-    description: string;
-    title: string;
-    type?: string;
-  };
+  selectedResult: ISelectedResult;
   onOpenChange: () => void;
 }
 
-const EditDialog = ({ selectedResult, onOpenChange }: IEditDialog) => {
+const EditDialog = ({
+  selectedResult,
+  onOpenChange,
+}: //  onOpenChange
+IEditDialog) => {
   console.log({ selectedResult });
   return (
     <Dialog
       open={!!selectedResult}
-      //   onOpenChange={() => setSelectedResult(null)}
       onOpenChange={onOpenChange}
+      // onOpenChange={onOpenChange}
     >
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>
-            {selectedResult?.type && (
+            {selectedResult?.title && (
               <div
                 className={`inline-flex items-center gap-2 ${
-                  selectedResult?.type === "Missing"
+                  selectedResult?.status === "Missing"
                     ? "text-red-500"
                     : "text-yellow-500"
                 }`}
               >
                 <span className="w-2 h-2 rounded-full bg-current" />
-                {selectedResult?.type}
+                {selectedResult?.status}
               </div>
             )}
+            {/* <DialogClose
+              
+              className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
+            >
+              <span className="text-xl">&times;</span> 
+            </DialogClose> */}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">

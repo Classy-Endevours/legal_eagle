@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Edit, X } from "lucide-react";
 
 interface IAIResults {
-  onSelectedResult: (v: { title: string; description: string }) => void;
+  // onSelectedResult: (v: { title: string; description: string }) => void;
   onClose: () => void;
 }
 
@@ -27,7 +27,10 @@ const mockAIResults = [
   },
 ];
 
-const Summarize = ({ onSelectedResult, onClose }: IAIResults) => {
+const Summarize = ({
+  //  onSelectedResult,
+  onClose,
+}: IAIResults) => {
   return (
     <div className="space-y-4 mt-1">
       <div className="flex items-center justify-between mb-4">
@@ -46,7 +49,7 @@ const Summarize = ({ onSelectedResult, onClose }: IAIResults) => {
               variant="ghost"
               size="icon"
               className="h-8 w-8"
-              onClick={() => onSelectedResult(result)}
+              // onClick={() => onSelectedResult(result)}
             >
               <Edit className="h-4 w-4" />
             </Button>

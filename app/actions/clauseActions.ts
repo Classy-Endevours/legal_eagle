@@ -1,39 +1,49 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ObjectId } from "mongodb";
-import clientPromise from "../lib/mongodb";
+import dbConnect from "../lib/mongoose";
+import Clause from "../models/Clause";
 
-export interface Clause {
-  _id?: string;
-  clause: string;
-  category: string;
+interface ClauseDetails {
   preferences: string;
   description: string;
 }
 
+export interface IClause {
+  _id?: string;
+  title: string;
+  category: string;
+  goodAspect: ClauseDetails;
+  badAspect: ClauseDetails;
+}
+
 // Create a new clause
-export async function createClause(formData: Clause) {
+export async function createClause(formData: IClause) {
   try {
-    const client = await clientPromise;
-    const db = client.db("clauselibrary");
-    await db.collection("clauses").insertOne(formData as any);
+    await dbConnect();
+
+    const clause = new Clause(formData);
+    await clause.save();
     revalidatePath("/clauses");
+
     return { success: true };
-  } catch (error) {
-    return { success: false, error: "Failed to create clause" };
+  } catch (error: any) {
+    console.error("Create clause error:", error.message);
+    return {
+      success: false,
+      error: error.message || "Failed to create clause",
+    };
   }
 }
 
 // Read all clauses
 export async function getClauses() {
   try {
-    const client = await clientPromise;
-    const db = client.db("clauselibrary");
-
-    const clauses = await db.collection("clauses").find({}).toArray();
+    await dbConnect();
+    const clauses = await Clause.find({}).lean();
     return { success: true, data: JSON.parse(JSON.stringify(clauses)) };
   } catch (error) {
+    console.error("Get clauses error:", error);
     return { success: false, error: "Failed to fetch clauses" };
   }
 }
@@ -41,34 +51,36 @@ export async function getClauses() {
 // Read single clause
 export async function getClause(id: string) {
   try {
-    const client = await clientPromise;
-    const db = client.db("clauselibrary");
-
-    const clause = await db
-      .collection("clauses")
-      .findOne({ _id: new ObjectId(id) });
+    await dbConnect();
+    const clause = await Clause.findById(id).lean();
+    if (!clause) {
+      return { success: false, error: "Clause not found" };
+    }
     return { success: true, data: clause };
   } catch (error) {
+    console.error("Get clause error:", error);
     return { success: false, error: "Failed to fetch clause" };
   }
 }
 
 // Update clause
-export async function updateClause(id: string, clause: Clause) {
+export async function updateClause(id: string, clauseData: IClause) {
   try {
-    const client = await clientPromise;
-    const db = client.db("clauselibrary");
+    await dbConnect();
+    const { _id, ...updateData } = clauseData;
+    const updatedClause = await Clause.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    }).lean();
 
-    const { _id, ...clauseData } = clause;
-
-    await db
-      .collection("clauses")
-      .updateOne({ _id: new ObjectId(id) }, { $set: clauseData });
+    if (!updatedClause) {
+      return { success: false, error: "Clause not found" };
+    }
 
     revalidatePath("/clauses");
-    return { success: true };
+    return { success: true, data: updatedClause };
   } catch (error) {
-    console.log(error);
+    console.error("Update clause error:", error);
     return { success: false, error: "Failed to update clause" };
   }
 }
@@ -76,13 +88,47 @@ export async function updateClause(id: string, clause: Clause) {
 // Delete clause
 export async function deleteClause(id: string) {
   try {
-    const client = await clientPromise;
-    const db = client.db("clauselibrary");
+    await dbConnect();
+    const deletedClause = await Clause.findByIdAndDelete(id);
 
-    await db.collection("clauses").deleteOne({ _id: new ObjectId(id) });
+    if (!deletedClause) {
+      return { success: false, error: "Clause not found" };
+    }
+
     revalidatePath("/clauses");
     return { success: true };
   } catch (error) {
+    console.error("Delete clause error:", error);
     return { success: false, error: "Failed to delete clause" };
+  }
+}
+
+// Search clauses by title or category
+export async function searchClauses(searchTerm: string) {
+  try {
+    await dbConnect();
+    const clauses = await Clause.find({
+      $or: [
+        { title: { $regex: searchTerm, $options: "i" } },
+        { category: { $regex: searchTerm, $options: "i" } },
+      ],
+    }).lean();
+
+    return { success: true, data: JSON.parse(JSON.stringify(clauses)) };
+  } catch (error) {
+    console.error("Search clauses error:", error);
+    return { success: false, error: "Failed to search clauses" };
+  }
+}
+
+// Get clauses by category
+export async function getClausesByCategory(category: string) {
+  try {
+    await dbConnect();
+    const clauses = await Clause.find({ category }).lean();
+    return { success: true, data: JSON.parse(JSON.stringify(clauses)) };
+  } catch (error) {
+    console.error("Get clauses by category error:", error);
+    return { success: false, error: "Failed to fetch clauses by category" };
   }
 }
