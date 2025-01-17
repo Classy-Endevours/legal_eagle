@@ -6,6 +6,7 @@ const ClauseContext = createContext<IClause>({
   handleClause: () => {},
   setContent: () => {},
   content: "",
+  loading: false,
 });
 
 interface IClause {
@@ -13,6 +14,7 @@ interface IClause {
   handleClause: () => void;
   setContent: (v: string) => void;
   content: string;
+  loading: boolean;
 }
 
 interface IClauseData {
@@ -24,15 +26,23 @@ interface IClauseData {
 const ClauseProvider = ({ children }: { children: ReactNode }) => {
   const [clauses, setClauses] = useState<IClauseData[]>([]);
   const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleClause = async () => {
-    const { result } = await analyzeClause(content);
+    try {
+      setLoading(true);
+      const { result } = await analyzeClause(content);
 
-    setClauses(result);
+      setClauses(result);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <ClauseContext.Provider
-      value={{ clauses, handleClause, content, setContent }}
+      value={{ clauses, handleClause, content, setContent, loading }}
     >
       {children}
     </ClauseContext.Provider>

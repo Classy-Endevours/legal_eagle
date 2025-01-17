@@ -1,5 +1,5 @@
 export const mockAIResults = {
-  output: [
+  result: [
     {
       status: "Missing",
       title: "Specific State Not Specified",

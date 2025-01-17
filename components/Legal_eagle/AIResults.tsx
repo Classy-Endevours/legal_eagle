@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { X, Edit } from "lucide-react";
 import { useClause } from "@/hooks/useClause";
+import { MoonLoader, RotateLoader } from "react-spinners";
 
 interface IAIResults {
   onSelectedResult: (v: any) => void;
@@ -10,13 +11,19 @@ interface IAIResults {
 }
 
 const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
-  const { clauses, handleClause } = useClause();
+  const { clauses, handleClause, loading } = useClause();
   console.log({ clauses });
   useEffect(() => {
     handleClause();
   }, []);
 
-  
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-32">
+        <RotateLoader color="#7FFFD4" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 mt-1">
