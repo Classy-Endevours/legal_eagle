@@ -166,6 +166,8 @@ const ClauseLibrary = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   console.log({ clauses });
