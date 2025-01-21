@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Edit, Flag } from "lucide-react";
+import { X, Edit, Flag, FlagOff } from "lucide-react";
 import { IClauseData, useClause } from "@/hooks/useClause";
 import { MoonLoader, RotateLoader } from "react-spinners";
 import {
   getAllReports,
   reportAIReview,
 } from "@/app/actions/reportAIGeneratedReport";
+import { getAllReportsByDocumentId } from "@/app/actions/aIGeneratedReview";
 
 interface IAIResults {
   onSelectedResult: (v: any) => void;
@@ -20,7 +21,7 @@ interface IReports {
 }
 
 const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
-  const { clauses, handleClause, loading, document } = useClause();
+  const { clauses, handleClause, loading, document, setClauses } = useClause();
   const [reports, setReports] = useState<IReports[]>([]);
 
   useEffect(() => {
@@ -53,6 +54,8 @@ const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
         return;
       }
       await reportAIReview(clauseId);
+      const clauses = await getAllReportsByDocumentId(document._id);
+      setClauses(clauses);
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +100,7 @@ const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
               className="bg-red-400 h-8 w-8"
               onClick={() => reportReview(result._id as string)}
             >
-              <Flag className="h-4 w-4" />
+             {result.isReported? <FlagOff className="h-4 w-4"  />: <Flag className="h-4 w-4" />}
             </Button>
             <Button
               variant="ghost"
