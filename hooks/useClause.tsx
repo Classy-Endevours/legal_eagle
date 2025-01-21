@@ -14,6 +14,7 @@ const ClauseContext = createContext<IClause>({
   handleClause: () => {},
   setContent: () => {},
   setDocument: () => {},
+  saveDocument: () => {},
   content: "",
   loading: false,
   document: {
@@ -28,6 +29,7 @@ interface IClause {
   summary: IClauseSummary[];
   handleClause: (documentId: string) => void;
   setContent: (v: string) => void;
+  saveDocument: (v: string) => void;
   setDocument: (v: IDocument) => void;
   content: string;
   loading: boolean;
@@ -60,18 +62,10 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [document, setDocument] = useState<IDocument | null>(null);
 
-  useEffect(() => {
-    if (content) {
-      saveDocument();
-    }
-  }, [content]);
-
-  console.log({ clauses });
-
-  const saveDocument = async () => {
+  const saveDocument = async (data: string) => {
     try {
-      const data = await createDocument(content);
-      setDocument((data as any).data);
+      const response = await createDocument(data);
+      setDocument((response as any).data);
     } catch (error) {
       console.log(error);
     }
@@ -118,6 +112,7 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
         content,
         setContent,
         setDocument,
+        saveDocument,
         loading,
         document,
         generateSummary,

@@ -1,12 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import mammoth from "mammoth";
 import { useClause } from "@/hooks/useClause";
 
-
-
 const DocxUpload: React.FC = () => {
-  const { content, setContent } = useClause();
+  const { content, setContent, saveDocument } = useClause();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -23,6 +21,7 @@ const DocxUpload: React.FC = () => {
             .extractRawText({ arrayBuffer })
             .then((result) => {
               setContent(result.value);
+              saveDocument(result.value);
             })
             .catch((err) => {
               console.error("Error reading DOCX file", err);
@@ -85,14 +84,14 @@ const DocxUpload: React.FC = () => {
         </div>
       )}
       {content && (
-          <div className="mt-8 p-6 border rounded-md bg-white shadow-md">
-            <h3 className="text-xl font-semibold text-gray-700 mb-4">
-              Document Content:
-            </h3>
-            <div className="overflow-y-auto max-h-96">
-              <pre className="whitespace-pre-wrap text-sm text-gray-700 break-words">
-                {content}
-              </pre>
+        <div className="mt-8 p-6 border rounded-md bg-white shadow-md">
+          <h3 className="text-xl font-semibold text-gray-700 mb-4">
+            Document Content:
+          </h3>
+          <div className="overflow-y-auto max-h-96">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 break-words">
+              {content}
+            </pre>
           </div>
         </div>
       )}
