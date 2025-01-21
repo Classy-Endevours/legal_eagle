@@ -26,7 +26,7 @@ export const analyzeClause = async ({
       if (response.length !== 0) {
         return response;
       } else {
-        // return mockAIResults;
+        // return mockAIResults.result;
 
         const newClause = new ClauseGPT();
         const result = await newClause.analyzeClause(content);
@@ -54,11 +54,11 @@ export const summarizeClause = async (data: string, documentId: string) => {
       if (response.length !== 0) {
         return response;
       } else {
+        // return newMockSummary.result
         const newSummarize = new SummarizeGPT();
         const response = await newSummarize.summarizeClause(data);
         const { result } = await saveAIGeneratedSummary({
           data: response,
-          // data: newMockSummary,
           documentId,
         });
         return result;
@@ -68,3 +68,4 @@ export const summarizeClause = async (data: string, documentId: string) => {
     console.log({ error });
   }
 };
+

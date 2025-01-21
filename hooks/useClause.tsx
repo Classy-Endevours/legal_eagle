@@ -1,18 +1,13 @@
 import { analyzeClause, summarizeClause } from "@/app/actions/clauseAnalysis";
 import { createDocument } from "@/app/actions/document";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 const ClauseContext = createContext<IClause>({
   clauses: [],
   summary: [],
   handleClause: () => {},
   setContent: () => {},
+  setClauses: () => {},
   setDocument: () => {},
   saveDocument: () => {},
   content: "",
@@ -31,6 +26,7 @@ interface IClause {
   setContent: (v: string) => void;
   saveDocument: (v: string) => void;
   setDocument: (v: IDocument) => void;
+  setClauses: (v: IClauseData[]) => void;
   content: string;
   loading: boolean;
   document: IDocument | null;
@@ -113,6 +109,7 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
         setContent,
         setDocument,
         saveDocument,
+        setClauses,
         loading,
         document,
         generateSummary,
