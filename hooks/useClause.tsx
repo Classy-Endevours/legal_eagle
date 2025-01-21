@@ -1,51 +1,128 @@
-import { analyzeClause } from "@/app/actions/clauseAnalysis";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { saveAIGeneratedReview } from "@/app/actions/aIGeneratedReview";
+import { analyzeClause, summarizeClause } from "@/app/actions/clauseAnalysis";
+import { createDocument } from "@/app/actions/document";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 const ClauseContext = createContext<IClause>({
   clauses: [],
+  summary: [],
   handleClause: () => {},
   setContent: () => {},
+  setDocument: () => {},
   content: "",
   loading: false,
+  document: {
+    _id: "",
+    content: "",
+  },
+  generateSummary: () => {},
 });
 
 interface IClause {
   clauses: IClauseData[];
-  handleClause: () => void;
+  summary: IClauseSummary[];
+  handleClause: (documentId: string) => void;
   setContent: (v: string) => void;
+  setDocument: (v: IDocument) => void;
   content: string;
   loading: boolean;
+  document: IDocument | null;
+  generateSummary: () => void;
 }
 
-interface IClauseData {
+export interface IClauseData {
   title: string;
   description: string;
   status: "Needs Review" | "Missing" | string;
+  isReported: boolean;
+  _id?: string;
+}
+
+export interface IClauseSummary {
+  title: string;
+  summary: string;
+}
+
+interface IDocument {
+  _id: string;
+  content: string;
 }
 
 const ClauseProvider = ({ children }: { children: ReactNode }) => {
   const [clauses, setClauses] = useState<IClauseData[]>([]);
+  const [summary, setSummary] = useState<IClauseSummary[]>([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [document, setDocument] = useState<IDocument | null>(null);
 
-  const handleClause = async () => {
+  useEffect(() => {
+    if (content) {
+      // saveDocument();
+    }
+  }, [content]);
+
+  console.log({ clauses });
+
+  const saveDocument = async () => {
     try {
-      if (clauses.length) {
-        return;
+      const data = await createDocument(content);
+      setDocument((data as any).data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClause = async (documentId: string) => {
+    try {
+      if (clauses?.length) {
+        // return;
       }
       setLoading(true);
-      const { result } = await analyzeClause(content);
-
-      setClauses(result);
+      const result = await analyzeClause({ content, documentId });
+      console.log({ result });
+      setClauses(result as any);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  const generateSummary = async () => {
+    try {
+      if (!document?._id) {
+        return;
+      }
+      setLoading(true);
+      const result = await summarizeClause(content, document?._id);
+      setSummary(result as IClauseSummary[]);
+      console.log({ result });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ClauseContext.Provider
-      value={{ clauses, handleClause, content, setContent, loading }}
+      value={{
+        clauses,
+        summary,
+        handleClause,
+        content,
+        setContent,
+        setDocument,
+        loading,
+        document,
+        generateSummary,
+      }}
     >
       {children}
     </ClauseContext.Provider>

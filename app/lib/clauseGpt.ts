@@ -68,24 +68,6 @@ Analyze the input string and generate a structured output in the above format. O
     return systemPrompt;
   }
 
-  extractJSONFromMessage(message: string) {
-    const regex = /```json([\s\S]+?)```/; // Regular expression to match JSON within code blocks
-    const match = message.match(regex); // Match the JSON code block
-    if (match && match[1]) {
-      try {
-        const jsonStr = match[1].trim(); // Extract the JSON string and trim any leading/trailing whitespace
-        const jsonObj = JSON.parse(jsonStr); // Parse the JSON string into a JavaScript object
-        return jsonObj; // Return the parsed JSON object
-      } catch (error) {
-        console.error("Error parsing JSON:", error); // Log any parsing errors
-        return null; // Return null if there's an error parsing the JSON
-      }
-    } else {
-      console.error("No JSON code block found in the message."); // Log if no JSON code block is found
-      return null; // Return null if no JSON code block is found
-    }
-  }
-
   async analyzeClause(data: string) {
     const response = await this.openaiClient.chat.completions.create({
       model: this.modelId,

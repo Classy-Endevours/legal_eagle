@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit, X } from "lucide-react";
+import { useClause } from "@/hooks/useClause";
+import { RotateLoader } from "react-spinners";
 
 interface IAIResults {
   // onSelectedResult: (v: { title: string; description: string }) => void;
@@ -31,6 +33,19 @@ const Summarize = ({
   //  onSelectedResult,
   onClose,
 }: IAIResults) => {
+  const { generateSummary, loading, summary } = useClause();
+
+  useEffect(() => {
+    generateSummary();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center mt-32">
+        <RotateLoader color="#7FFFD4" />
+      </div>
+    );
+  }
   return (
     <div className="space-y-4 mt-1">
       <div className="flex items-center justify-between mb-4">
@@ -40,11 +55,11 @@ const Summarize = ({
           <X className="h-4 w-4" />
         </Button>
       </div>
-      {mockAIResults.map((result, index) => (
+      {summary.map((item, index) => (
         <div key={index} className="border rounded-lg p-4 relative">
-          <h4 className="font-medium">{result.title}</h4>
-          <p className="text-sm text-gray-600">{result.description}</p>
-          <div className="absolute top-4 right-4 space-x-2">
+          <h4 className="font-medium">{item.title}</h4>
+          <p className="text-sm text-gray-600">{item.summary}</p>
+          {/* <div className="absolute top-4 right-4 space-x-2">
             <Button
               variant="ghost"
               size="icon"
@@ -53,7 +68,7 @@ const Summarize = ({
             >
               <Edit className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
         </div>
       ))}
     </div>
