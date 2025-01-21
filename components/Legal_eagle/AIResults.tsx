@@ -1,21 +1,62 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X, Edit } from "lucide-react";
-import { useClause } from "@/hooks/useClause";
+import { X, Edit, Flag } from "lucide-react";
+import { IClauseData, useClause } from "@/hooks/useClause";
 import { MoonLoader, RotateLoader } from "react-spinners";
+import {
+  getAllReports,
+  reportAIReview,
+} from "@/app/actions/reportAIGeneratedReport";
 
 interface IAIResults {
   onSelectedResult: (v: any) => void;
   onClose: () => void;
 }
 
+interface IReports {
+  file: string;
+  AIGeneratedReport: string;
+}
+
 const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
-  const { clauses, handleClause, loading } = useClause();
-  console.log({ clauses });
+  const { clauses, handleClause, loading, document } = useClause();
+  const [reports, setReports] = useState<IReports[]>([]);
+
   useEffect(() => {
-    handleClause();
+    if (document?._id) {
+      handleClause(document?._id);
+    }
   }, []);
+
+  useEffect(() => {
+    if (clauses?.length) {
+      getReports();
+    }
+  }, [clauses]);
+
+  const getReports = async () => {
+    try {
+      if (!document?._id) {
+        return;
+      }
+      const result = await getAllReports(document?._id);
+      setReports(result as any);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const reportReview = async (clauseId: string) => {
+    try {
+      if (!document?._id) {
+        return;
+      }
+      await reportAIReview(clauseId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (loading) {
     return (
@@ -37,16 +78,27 @@ const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
       {clauses?.map((result, index) => (
         <div key={index} className="border rounded-lg p-4 relative">
           <div
-            className={`inline-flex items-center gap-2 mb-2 ${
+            className={`flex items-center gap-2 mb-2 ${
               result.status === "Missing" ? "text-red-500" : "text-yellow-500"
             }`}
           >
             <span className="w-2 h-2 rounded-full bg-current" />
             {result.status}
+            <div className="flex justify-end  text-red-500">
+              {result.isReported && <div>Reported</div>}
+            </div>
           </div>
           <h4 className="font-medium">{result.title}</h4>
           <p className="text-sm text-gray-600">{result.description}</p>
+
           <div className="absolute top-4 right-4 space-x-2">
+            <Button
+              size="icon"
+              className="bg-red-400 h-8 w-8"
+              onClick={() => reportReview(result._id as string)}
+            >
+              <Flag className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -55,9 +107,9 @@ const AIResults = ({ onSelectedResult, onClose }: IAIResults) => {
             >
               <Edit className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
+            {/* <Button variant="ghost" size="icon" className="h-8 w-8">
               <X className="h-4 w-4" />
-            </Button>
+            </Button> */}
           </div>
         </div>
       ))}

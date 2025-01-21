@@ -170,7 +170,7 @@ const ClauseLibrary = () => {
       setLoading(false);
     }
   };
-  console.log({ clauses });
+  
   const formFields = () => (
     <div className="space-y-4">
       <div>

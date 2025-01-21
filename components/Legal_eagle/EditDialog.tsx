@@ -20,7 +20,7 @@ const EditDialog = ({
   onOpenChange,
 }: //  onOpenChange
 IEditDialog) => {
-  console.log({ selectedResult });
+  
   return (
     <Dialog
       open={!!selectedResult}

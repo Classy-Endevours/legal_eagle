@@ -85,14 +85,14 @@ const DocxUpload: React.FC = () => {
         </div>
       )}
       {content && (
-        <div className="mt-8 p-6 border rounded-md bg-white shadow-md">
-          <h3 className="text-xl font-semibold text-gray-700 mb-4">
-            Document Content:
-          </h3>
-          <div className="overflow-y-auto max-h-96">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 break-words">
-              {content}
-            </pre>
+          <div className="mt-8 p-6 border rounded-md bg-white shadow-md">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">
+              Document Content:
+            </h3>
+            <div className="overflow-y-auto max-h-96">
+              <pre className="whitespace-pre-wrap text-sm text-gray-700 break-words">
+                {content}
+              </pre>
           </div>
         </div>
       )}
