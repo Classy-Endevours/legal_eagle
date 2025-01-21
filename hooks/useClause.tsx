@@ -1,4 +1,3 @@
-import { saveAIGeneratedReview } from "@/app/actions/aIGeneratedReview";
 import { analyzeClause, summarizeClause } from "@/app/actions/clauseAnalysis";
 import { createDocument } from "@/app/actions/document";
 import {
@@ -63,7 +62,7 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (content) {
-      // saveDocument();
+      saveDocument();
     }
   }, [content]);
 
@@ -81,7 +80,7 @@ const ClauseProvider = ({ children }: { children: ReactNode }) => {
   const handleClause = async (documentId: string) => {
     try {
       if (clauses?.length) {
-        // return;
+        return;
       }
       setLoading(true);
       const result = await analyzeClause({ content, documentId });

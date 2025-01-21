@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, Maximize2, Star } from "lucide-react";
+import { X } from "lucide-react";
 import ClauseLibrary from "@/components/Legal_eagle/ClauseLibrary";
 import TermsAndCondition from "@/components/Legal_eagle/TermsAndCondition";
 import AIResults from "@/components/Legal_eagle/AIResults";

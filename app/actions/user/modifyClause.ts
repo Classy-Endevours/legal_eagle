@@ -10,8 +10,8 @@ function getRandomString(str1: string, str2: string) {
 
 export const modifyClause = async (userPrompt: string, content: string) => {
   try {
-    const output = getRandomString(userModifyMockData3, userModifyMockData4);
-    return output;
+    // const output = getRandomString(userModifyMockData3, userModifyMockData4);
+    // return output;
     const newUserPrompt = new UserPromptGPT();
     const response = await newUserPrompt.modify(userPrompt, content);
     return response;

@@ -23,20 +23,25 @@ export const analyzeClause = async ({
   try {
     if (documentId) {
       const response = await getAllReportsByDocumentId(documentId);
-      return response;
+      if (response.length !== 0) {
+        return response;
+      } else {
+        // return mockAIResults;
+
+        const newClause = new ClauseGPT();
+        const result = await newClause.analyzeClause(content);
+        const { data } = await saveAIGeneratedReview({
+          data: result,
+          documentId,
+        });
+        // const { data } = await saveAIGeneratedReview({
+        //   data: newMockData,
+        //   documentId,
+        // });
+
+        return data;
+      }
     }
-
-    // return mockAIResults;
-
-    const newClause = new ClauseGPT();
-    const result = await newClause.analyzeClause(content);
-    const { data } = await saveAIGeneratedReview({ data: result, documentId });
-    // const { data } = await saveAIGeneratedReview({
-    //   data: newMockData,
-    //   documentId,
-    // });
-
-    return data;
   } catch (error) {
     console.log({ error });
   }
@@ -49,11 +54,11 @@ export const summarizeClause = async (data: string, documentId: string) => {
       if (response.length !== 0) {
         return response;
       } else {
-        // const newSummarize = new SummarizeGPT();
-        // const response = await newSummarize.summarizeClause(data);
+        const newSummarize = new SummarizeGPT();
+        const response = await newSummarize.summarizeClause(data);
         const { result } = await saveAIGeneratedSummary({
-          // data: response,
-          data: newMockSummary,
+          data: response,
+          // data: newMockSummary,
           documentId,
         });
         return result;
