@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ISelectedResult } from "@/app/page";
+import { ISelectedResult } from "./Home";
 
 interface IEditDialog {
   selectedResult: ISelectedResult;
